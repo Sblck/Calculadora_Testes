@@ -1,5 +1,6 @@
 import unittest
 import math
+import operator
 from main import calculadora, calculadora_v2, calculadora_v3, calculadora_v4
 
 
@@ -7,28 +8,39 @@ class TestCalculadora(unittest.TestCase):
 
     valores = [2, -2, 2.5, -2.5]
 
-    def teste_loop_combinacoes_valores(self, func):
+    def _loop_combinacoes_valores(self, func):
+        operacoes = [
+            ('+', operator.add),
+            ('-', operator.sub),
+            ('*', operator.mul),
+            ('/', operator.truediv),
+            ('%', operator.mod),
+            ('^', operator.pow),
+        ]
         # Teste operações básicas de cada operador + - * / % ^
         for a in self.valores:
             for b in self.valores:
-                self.assertEqual(func(a, b, '+'), a + b)
-                self.assertEqual(func(a, b, '-'), a - b)
-                self.assertEqual(func(a, b, '*'), a * b)
-                self.assertEqual(func(a, b, '/'), a / b)
-                self.assertEqual(func(a, b, '%'), a % b)
-                self.assertEqual(func(a, b, '^'), a ^ b)
+                 for simbolo, op_func in operacoes:
+                    teorico = op_func(a, b)
+                    nossa_implmentacao = func(a, b, simbolo)
+                    self.assertEqual(
+                        nossa_implmentacao, teorico,
+                        msg=f"Erro para a={a}, b={b}, operação='{simbolo}'"
+                    )
+                #self.assertEqual(func(a, b, '^'), a ^ b, msg=f"Erro para a={a}, b={b}, operação='^'")
+                # a ^ b é bitwise em python é XOR !
 
     def teste_operacoes_basicas(self):
-        self._testa_operacoes_basicas(calculadora)
+        self._loop_combinacoes_valores(calculadora)
 
     def teste_v2_operacoes(self):
-        self._testa_operacoes_basicas(calculadora_v2)
+        self._loop_combinacoes_valores(calculadora_v2)
 
     def teste_v3_operacoes(self):
-        self._testa_operacoes_basicas(calculadora_v3)
+        self._loop_combinacoes_valores(calculadora_v3)
 
     def teste_v4_operacoes(self):
-        self._testa_operacoes_basicas(calculadora_v4)
+        self._loop_combinacoes_valores(calculadora_v4)
 
     def teste_operacoes_diversas(self):
         valores = [0] + self.valores
