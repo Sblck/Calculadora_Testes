@@ -96,14 +96,20 @@ class TestCalculadora(unittest.TestCase):
         valores = [0, -3, -4.2]
         for funcao in [calculadora, calculadora_v2, calculadora_v3, calculadora_v4]:
             for a in valores:
-                #a^0 = 1
-                self.assertEqual(funcao(a, 0, '^'), 1)
+                with self.subTest(funcao=funcao, a=a, b=0, op='^'):
+                    try:
+                        # a^0 = 1
+                        self.assertEqual(funcao(a, 0, '^'), 1)
+                    except Exception as e:
+                        self.fail(f"{type(e).__name__} para {a} ^ 0 com {funcao.__name__}: {e}")
             for b in valores:
-                # 0^b = 0 para b > 0, 0^0 == 1
-                if b == 0:
-                    self.assertEqual(funcao(0, b, '^'), 1)
-                else:
-                    self.assertEqual(funcao(0, b, '^'), 0)
+                with self.subTest(funcao=funcao, a=0, b=b, op='^'):
+                    try:
+                        # 0^b = 0 para b != 0, 0^0 == 1
+                        esperado = 1 if b == 0 else 0
+                        self.assertEqual(funcao(0, b, '^'), esperado)
+                    except Exception as e:
+                        self.fail(f"{type(e).__name__} para 0 ^ {b} com {funcao.__name__}: {e}")
 
 
 if __name__ == '__main__':
