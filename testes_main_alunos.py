@@ -23,6 +23,7 @@ class TestCalculadora(unittest.TestCase):
                  for simbolo, op_func in operacoes:
                     teorico = op_func(a, b)
                     nossa_implmentacao = func(a, b, simbolo)
+                    #print(f"Testando: {a} {simbolo} {b} | Esperado: {teorico} | Resultado: {nossa_implmentacao}")
                     self.assertEqual(
                         nossa_implmentacao, teorico,
                         msg=f"Erro para a={a}, b={b}, operação='{simbolo}'"
@@ -46,18 +47,29 @@ class TestCalculadora(unittest.TestCase):
         valores = [0] + self.valores
         for funcao in [calculadora, calculadora_v2, calculadora_v3, calculadora_v4]:
             for a in valores:
-                # Teste divisão por zero operador para todas versões / %
-                self.assertTrue(math.isnan(calculadora(a, 0, '/')))
-                self.assertTrue(math.isnan(calculadora(a, 0, '%')))
+                for op in ['/','%']:
+                    with self.subTest(a=a, op=op, funcao=funcao):
+                        try:
+                            resultado_div = funcao(a, 0, op)
+                            self.assertTrue(math.isnan(resultado_div), msg=f"Esperado nan para {a} / 0 com {funcao.__name__}")
+                        except Exception as e:
+                            self.fail(f"{type(e).__name__} para {a} {op} 0 com {funcao.__name__}: {e}")
 
         # Teste operador inválido - fazer três testes para todas as versões
         valores = [0] + self.valores
-        for funcao in [calculadora_v2, calculadora_v3, calculadora_v4]:
+        for funcao in [calculadora, calculadora_v2, calculadora_v3, calculadora_v4]:
             for a in valores:
                 for b in valores:
-                    self.assertTrue(math.isnan(funcao(a, b, '$')))
-                    self.assertTrue(math.isnan(funcao(a, b, '#')))
-                    self.assertTrue(math.isnan(funcao(a, b, 'qwe')))
+                    for op in ['$', '#', 'qwe']:
+                        with self.subTest(a=a, b=b, op=op, funcao=funcao):
+                            try:
+                                resultado = funcao(a, b, op)
+                                self.assertTrue(
+                                    math.isnan(resultado),
+                                    msg=f"Esperado nan para {a} {op} {b} com {funcao.__name__}"
+                                )
+                            except Exception as e:
+                                self.fail(f"{type(e).__name__} para {a} {op} {b} com {funcao.__name__}: {e}")
 
         # Teste números de virgula flutuante - fazer três testes para todas as versões
 
