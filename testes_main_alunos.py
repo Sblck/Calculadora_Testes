@@ -5,57 +5,33 @@ from main import calculadora, calculadora_v2, calculadora_v3, calculadora_v4
 
 class TestCalculadora(unittest.TestCase):
 
+    valores = [2, -2, 2.5, -2.5]
+
+    def teste_loop_combinacoes_valores(self, func):
+        # Teste operações básicas de cada operador + - * / % ^
+        for a in self.valores:
+            for b in self.valores:
+                self.assertEqual(func(a, b, '+'), a + b)
+                self.assertEqual(func(a, b, '-'), a - b)
+                self.assertEqual(func(a, b, '*'), a * b)
+                self.assertEqual(func(a, b, '/'), a / b)
+                self.assertEqual(func(a, b, '%'), a % b)
+                self.assertEqual(func(a, b, '^'), a ^ b)
 
     def teste_operacoes_basicas(self):
-        valores = [2, -2, 2.5, -2.5]
-        for a in valores:
-            for b in valores:
-                # Teste operações básicas de cada operador + - * / % ^
-                self.assertEqual(calculadora(a, b, '+'), a+b)
-                self.assertEqual(calculadora(a, b, '-'), a-b)
-                self.assertEqual(calculadora(a, b, '*'), a*b)
-                self.assertEqual(calculadora(a, b, '/'), a/b)
-                self.assertEqual(calculadora(a, b, '%'), a%b)
-                self.assertEqual(calculadora(a, b, '^'), a^b)
+        self._testa_operacoes_basicas(calculadora)
 
     def teste_v2_operacoes(self):
-        valores = [2, -2, 2.5, -2.5]
-        for a in valores:
-            for b in valores:
-                # Teste operações básicas de cada operador + - * / % ^
-                self.assertEqual(calculadora_v2(a, b, '+'), a+b)
-                self.assertEqual(calculadora_v2(a, b, '-'), a-b)
-                self.assertEqual(calculadora_v2(a, b, '*'), a*b)
-                self.assertEqual(calculadora_v2(a, b, '/'), a/b)
-                self.assertEqual(calculadora_v2(a, b, '%'), a%b)
-                self.assertEqual(calculadora_v2(a, b, '^'), a^b)
+        self._testa_operacoes_basicas(calculadora_v2)
 
     def teste_v3_operacoes(self):
-        valores = [2, -2, 2.5, -2.5]
-        for a in valores:
-            for b in valores:
-                # Teste operações básicas de cada operador + - * / % ^
-                self.assertEqual(calculadora_v3(a, b, '+'), a+b)
-                self.assertEqual(calculadora_v3(a, b, '-'), a-b)
-                self.assertEqual(calculadora_v3(a, b, '*'), a*b)
-                self.assertEqual(calculadora_v3(a, b, '/'), a/b)
-                self.assertEqual(calculadora_v3(a, b, '%'), a%b)
-                self.assertEqual(calculadora_v3(a, b, '^'), a^b)
+        self._testa_operacoes_basicas(calculadora_v3)
 
     def teste_v4_operacoes(self):
-        valores = [2, -2, 2.5, -2.5]
-        for a in valores:
-            for b in valores:
-                # Teste operações básicas de cada operador + - * / % ^
-                self.assertEqual(calculadora_v4(a, b, '+'), a+b)
-                self.assertEqual(calculadora_v4(a, b, '-'), a-b)
-                self.assertEqual(calculadora_v4(a, b, '*'), a*b)
-                self.assertEqual(calculadora_v4(a, b, '/'), a/b)
-                self.assertEqual(calculadora_v4(a, b, '%'), a%b)
-                self.assertEqual(calculadora_v4(a, b, '^'), a^b)
+        self._testa_operacoes_basicas(calculadora_v4)
 
     def teste_operacoes_diversas(self):
-        valores = [0, 5, -5, 5.2, -5.2]
+        valores = [0] + self.valores
         for funcao in [calculadora, calculadora_v2, calculadora_v3, calculadora_v4]:
             for a in valores:
                 # Teste divisão por zero operador para todas versões / %
@@ -63,7 +39,7 @@ class TestCalculadora(unittest.TestCase):
                 self.assertTrue(math.isnan(calculadora(a, 0, '%')))
 
         # Teste operador inválido - fazer três testes para todas as versões
-        valores = [0,2, -2, 2.5, -2.5]
+        valores = [0] + self.valores
         for funcao in [calculadora_v2, calculadora_v3, calculadora_v4]:
             for a in valores:
                 for b in valores:
